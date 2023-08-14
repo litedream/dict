@@ -143,7 +143,7 @@ def main(parsed_data):
             json.dumps(antonyms, ensure_ascii=False),
             json.dumps(rel, ensure_ascii=False),
             json.dumps(phrase, ensure_ascii=False),
-            json.dumps(rem_method, ensure_ascii=False),
+            rem_method,
             json.dumps(sentence, ensure_ascii=False))
     try:
         cur.execute(sql,values)
