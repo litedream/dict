@@ -7,7 +7,10 @@ def get_tran(data):
     temp=[]
     temp2={}
     for i in data:
-        temp2['pos'] = i['pos']
+        try:
+            temp2['pos'] = i['pos']
+        except KeyError:
+            temp2['pos'] = 'other'
         temp2['tran'] = i['tranCn']
         temp.append(temp2.copy())
     return temp
@@ -132,16 +135,16 @@ def main(parsed_data):
         sentence = []
 
 
-    sql = "INSERT INTO lib (word, phone, tran, syno, anto, rel, phrase, rem_method,sentence) VALUES (%s, %s, '%s', '%s', '%s', '%s', '%s',%s,'%s')"
-    values = (json.dumps(word, ensure_ascii=False).replace("'","\\'"), 
-            json.dumps(phone, ensure_ascii=False).replace("'","\\'"), 
-            json.dumps(tran, ensure_ascii=False).replace("'","\\'"), 
-            json.dumps(synonyms, ensure_ascii=False).replace("'","\\'"),
-            json.dumps(antonyms, ensure_ascii=False).replace("'","\\'"), 
-            json.dumps(rel, ensure_ascii=False).replace("'","\\'"), 
-            json.dumps(phrase, ensure_ascii=False).replace("'","\\'"),
-            json.dumps(rem_method, ensure_ascii=False).replace("'","\\'"),
-            json.dumps(sentence, ensure_ascii=False).replace("'","\\'"))
+    sql = "INSERT INTO lib (word, phone, tran, syno, anto, rel, phrase, rem_method,sentence) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s)"
+    values = (word, 
+            json.dumps(phone, ensure_ascii=False),
+            json.dumps(tran, ensure_ascii=False),
+            json.dumps(synonyms, ensure_ascii=False),
+            json.dumps(antonyms, ensure_ascii=False),
+            json.dumps(rel, ensure_ascii=False),
+            json.dumps(phrase, ensure_ascii=False),
+            json.dumps(rem_method, ensure_ascii=False),
+            json.dumps(sentence, ensure_ascii=False))
     try:
         cur.execute(sql,values)
     except pymysql.err.IntegrityError as msg:
@@ -150,7 +153,7 @@ def main(parsed_data):
         else:
             print(msg)
     except pymysql.err.ProgrammingError as msg:
-        print(sql)
+        print(sql % values)
         print(msg)
         exit()
 
